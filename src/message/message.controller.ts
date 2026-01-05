@@ -9,6 +9,9 @@ import {
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
+
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
@@ -29,7 +32,7 @@ export class MessageController {
   @Post()
   create(
     @Body()
-    payload: any,
+    payload: CreateMessageDto,
   ) {
     return this.messageService.create(payload);
   }
@@ -37,7 +40,7 @@ export class MessageController {
   @Patch(':id')
   update(
     @Body()
-    payload: any,
+    payload: UpdateMessageDto,
 
     @Param('id')
     id: string,
