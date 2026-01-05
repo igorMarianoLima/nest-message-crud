@@ -31,7 +31,7 @@ export class MessageController {
     @Body()
     payload: any,
   ) {
-    return this.messageService.create();
+    return this.messageService.create(payload);
   }
 
   @Patch(':id')
@@ -42,11 +42,17 @@ export class MessageController {
     @Param('id')
     id: string,
   ) {
-    return this.messageService.update();
+    return this.messageService.update({
+      id,
+      body: payload,
+    });
   }
 
-  @Delete()
-  remove() {
-    return this.messageService.remove();
+  @Delete(':id')
+  remove(
+    @Param('id')
+    id: string,
+  ) {
+    return this.messageService.remove(id);
   }
 }
