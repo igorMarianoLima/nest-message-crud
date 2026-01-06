@@ -1,7 +1,10 @@
+import { Person } from 'src/person/entities/person.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,13 +14,13 @@ export class Message {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  from: string;
+  @ManyToOne(() => Person)
+  @JoinColumn()
+  from: Person;
 
-  @Column({
-    length: 255,
-  })
-  to: string;
+  @ManyToOne(() => Person)
+  @JoinColumn()
+  to: Person;
 
   @Column()
   content: string;
