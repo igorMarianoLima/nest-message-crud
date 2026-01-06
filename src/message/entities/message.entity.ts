@@ -14,11 +14,17 @@ export class Message {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Person)
+  @ManyToOne(() => Person, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   from: Person;
 
-  @ManyToOne(() => Person)
+  @ManyToOne(() => Person, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   to: Person;
 
