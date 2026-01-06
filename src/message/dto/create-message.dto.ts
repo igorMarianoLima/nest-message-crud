@@ -1,12 +1,12 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class CreateMessageDto {
   @IsString()
-  @IsEmail()
+  @IsUUID()
   readonly from: string;
 
   @IsString()
-  @IsEmail()
+  @IsUUID()
   readonly to: string;
 
   @IsString()
