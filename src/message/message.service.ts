@@ -2,61 +2,49 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MessageService {
-  private lastId = 0;
-  private messages: Message[] = [];
+  constructor(
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
+  ) {}
 
-  findAll(): Message[] {
-    return this.messages;
+  findAll(): Promise<Message[]> {
+    return this.messageRepository.find();
   }
 
   findOne(id: string) {
-    return this.messages.find((m) => m.id.toString() === id);
+    return this.messageRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  create(body: CreateMessageDto): Message {
-    this.lastId += 1;
+  async create(payload: CreateMessageDto): Promise<Message> {
+    const message = this.messageRepository.create(payload);
+    return this.messageRepository.save(message);
+  }
 
-    const newMessage: Message = {
+  async update({ id, body }: { id: string; body: UpdateMessageDto }) {
+    const message = await this.messageRepository.preload({
+      id,
       ...body,
-      id: this.lastId,
-      wasRead: false,
-      date: new Date(),
-    };
+    });
 
-    this.messages.push(newMessage);
+    if (!message) throw new NotFoundException();
 
-    return newMessage;
+    return this.messageRepository.save(message);
   }
 
-  update({ id, body }: { id: string; body: UpdateMessageDto }): Message {
-    const messageIndex = this.messages.findIndex((m) => m.id.toString() === id);
+  async remove(id: string) {
+    const message = await this.findOne(id);
 
-    if (messageIndex === -1) throw new NotFoundException();
+    if (!message) throw new NotFoundException();
 
-    const originalMessage = this.messages[messageIndex];
-
-    const updatedMessage: Message = {
-      ...originalMessage,
-      ...body,
-      id: originalMessage.id,
-      date: originalMessage.date,
-    };
-
-    this.messages[messageIndex] = updatedMessage;
-
-    return updatedMessage;
-  }
-
-  remove(id: string) {
-    const messageIndex = this.messages.findIndex((m) => m.id.toString() === id);
-
-    if (messageIndex === -1) throw new NotFoundException();
-
-    this.messages.splice(messageIndex);
-
-    return 'Removed message';
+    return this.messageRepository.remove(message);
   }
 }

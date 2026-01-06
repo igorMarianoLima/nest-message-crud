@@ -54,8 +54,8 @@ export class MessageController {
   @Delete(':id')
   remove(
     @Param('id')
-    id: number,
+    id: string,
   ) {
-    return this.messageService.remove(id.toString());
+    return this.messageService.remove(id);
   }
 }
