@@ -5,6 +5,7 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PersonService } from 'src/person/person.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class MessageService {
@@ -15,7 +16,9 @@ export class MessageService {
     private readonly personService: PersonService,
   ) {}
 
-  findAll(): Promise<Message[]> {
+  findAll(pagination: PaginationDto): Promise<Message[]> {
+    const { limit = 10, page = 0 } = pagination;
+
     return this.messageRepository.find({
       relations: {
         from: true,
@@ -33,6 +36,8 @@ export class MessageService {
           email: true,
         },
       },
+      take: limit,
+      skip: page * limit,
     });
   }
 
