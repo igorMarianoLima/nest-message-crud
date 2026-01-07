@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MessageModule } from './message/message.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PersonModule } from './person/person.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PersonModule } from './person/person.module';
     }),
     MessageModule,
     PersonModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
