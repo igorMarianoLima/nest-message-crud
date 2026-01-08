@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PersonService } from 'src/person/person.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { NotificationService } from 'src/notification/adapters/notification-service.service';
 
 @Injectable()
 export class MessageService {
@@ -14,6 +15,7 @@ export class MessageService {
     private readonly messageRepository: Repository<Message>,
 
     private readonly personService: PersonService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   findAll(pagination: PaginationDto): Promise<Message[]> {
@@ -77,6 +79,8 @@ export class MessageService {
       from: sender,
       to: receiver,
     });
+
+    await this.notificationService.send(receiver.email, payload.content);
 
     return this.messageRepository.save(message);
   }
