@@ -1,4 +1,4 @@
-import { NotificationService } from '../interfaces/notification-service.interface';
+import { NotificationService } from './notification-service.service';
 
 export class SmsNotificationService implements NotificationService {
   send(to: string, message: string) {
