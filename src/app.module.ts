@@ -15,6 +15,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.interceptor';
 import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.filter';
 import { NotificationModule } from './notification/notification.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { NotificationModule } from './notification/notification.module';
     PersonModule,
     LoggerModule,
     NotificationModule,
+    ConfigModule,
   ],
   controllers: [AppController],
   providers: [
