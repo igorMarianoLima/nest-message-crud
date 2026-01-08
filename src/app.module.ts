@@ -15,24 +15,25 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.interceptor';
 import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.filter';
 import { NotificationModule } from './notification/notification.module';
-import { ConfigModule } from './config/config.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db',
-      database: 'message_crud',
-      username: 'postgres',
-      password: 'postgres',
+      host: process.env.DB_HOST,
+      database: process.env.DB_SCHEMA,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: Number(process.env.DB_PORT),
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === 'development',
     }),
     MessageModule,
     PersonModule,
     LoggerModule,
     NotificationModule,
-    ConfigModule,
   ],
   controllers: [AppController],
   providers: [
