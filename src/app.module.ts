@@ -11,8 +11,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PersonModule } from './person/person.module';
 import { LoggerModule } from './logger/logger.module';
 import { RequestContextMiddleware } from './common/middlewares/RequestContext.middleware';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.interceptor';
+import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.filter';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.in
   providers: [
     AppService,
     { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
+    { provide: APP_FILTER, useClass: ExceptionLoggingFilter },
   ],
 })
 export class AppModule implements NestModule {
