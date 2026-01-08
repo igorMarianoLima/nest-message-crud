@@ -14,6 +14,7 @@ import { RequestContextMiddleware } from './common/middlewares/RequestContext.mi
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.interceptor';
 import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.filter';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.
     MessageModule,
     PersonModule,
     LoggerModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [

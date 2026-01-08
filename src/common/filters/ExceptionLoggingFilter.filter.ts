@@ -14,11 +14,9 @@ import { IRequestContext } from '../types/request-context.type';
 export class ExceptionLoggingFilter<
   T extends BadRequestException,
 > implements ExceptionFilter {
-  constructor(private loggerService: LoggerService) {}
+  constructor(private readonly loggerService: LoggerService) {}
 
   catch(exception: T, host: ArgumentsHost) {
-    console.log('[ExceptionLoggingFilter]');
-
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest<Request>();
