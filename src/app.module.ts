@@ -16,19 +16,29 @@ import { RequestLoggerInterceptor } from './common/interceptors/RequestLogger.in
 import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.filter';
 import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      database: process.env.DB_SCHEMA,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      port: Number(process.env.DB_PORT),
-      autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV === 'development',
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const environment = configService.getEnvironment();
+        const db = configService.getDatabase();
+
+        return {
+          type: 'postgres',
+          host: db.host,
+          database: db.database,
+          username: db.username,
+          password: db.password,
+          port: db.port,
+          synchronize: environment === 'development',
+          autoLoadEntities: true,
+        };
+      },
     }),
     MessageModule,
     PersonModule,

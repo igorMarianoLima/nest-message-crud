@@ -6,6 +6,13 @@ import { ConfigService as NestConfigService } from '@nestjs/config';
 export class ConfigService {
   constructor(private configService: NestConfigService) {}
 
+  getEnvironment() {
+    return (
+      this.configService.get<'development' | 'production'>('NODE_ENV') ??
+      'development'
+    );
+  }
+
   getDatabase() {
     return this.configService.get<DatabaseConfig>('database')!;
   }
