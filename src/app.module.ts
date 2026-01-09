@@ -17,6 +17,7 @@ import { ExceptionLoggingFilter } from './common/filters/ExceptionLoggingFilter.
 import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ConfigService } from './config/config.service';
     PersonModule,
     LoggerModule,
     NotificationModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
