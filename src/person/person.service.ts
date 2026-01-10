@@ -48,9 +48,19 @@ export class PersonService {
     });
   }
 
-  findOne(id: string) {
-    const person = this.personRepository.findOneBy({
+  async findOne(id: string) {
+    const person = await this.personRepository.findOneBy({
       id,
+    });
+
+    if (!person) throw new NotFoundException();
+
+    return person;
+  }
+
+  async findOneByEmail(email: string) {
+    const person = await this.personRepository.findOneBy({
+      email,
     });
 
     if (!person) throw new NotFoundException();
