@@ -13,6 +13,7 @@ import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { User } from 'src/auth/decorators/user.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @UseGuards(AuthTokenGuard)
 @Controller('person')
@@ -20,6 +21,7 @@ export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
   @Post()
+  @Public()
   create(@Body() createPersonDto: CreatePersonDto) {
     return this.personService.create(createPersonDto);
   }

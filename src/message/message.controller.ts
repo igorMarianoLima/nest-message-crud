@@ -7,13 +7,16 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 
+@UseGuards(AuthTokenGuard)
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
