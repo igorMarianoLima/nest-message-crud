@@ -105,15 +105,22 @@ export class MessageService {
     body: UpdateMessageDto;
     user: TokenPayloadDto;
   }) {
-    const message = await this.messageRepository.preload({
-      id,
-      ...body,
+    const message = await this.messageRepository.findOne({
+      where: { id },
+      relations: ['from'],
     });
 
     if (!message) throw new NotFoundException();
     if (message.from.email !== user.email) throw new ForbiddenException();
 
-    return this.messageRepository.save(message);
+    const updatedMessage = await this.messageRepository.preload({
+      id,
+      ...body,
+    });
+
+    if (!updatedMessage) throw new NotFoundException();
+
+    return this.messageRepository.save(updatedMessage);
   }
 
   async remove({ id, user }: { id: string; user: TokenPayloadDto }) {

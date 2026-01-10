@@ -53,12 +53,16 @@ export class MessageController {
     @Body()
     payload: UpdateMessageDto,
 
+    @User()
+    user: TokenPayloadDto,
+
     @Param('id')
     id: string,
   ) {
     return this.messageService.update({
       id,
       body: payload,
+      user,
     });
   }
 
