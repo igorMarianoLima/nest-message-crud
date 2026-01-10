@@ -8,12 +8,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_ENDPOINT, REQUEST_TOKEN_PAYLOAD } from '../auth.constants';
 import { Reflector } from '@nestjs/core';
+import { ConfigService } from 'src/config/config.service';
 
 @Injectable()
 export class AuthTokenGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -29,11 +31,18 @@ export class AuthTokenGuard implements CanActivate {
     if (!token) throw new UnauthorizedException('Not logged in');
 
     try {
+      const jwtConfig = this.configService.getJwt().secret;
+
+      await this.jwtService.verifyAsync(token, {
+        secret: jwtConfig,
+      });
+
       const payload = await this.jwtService.decode(token);
+
       request[REQUEST_TOKEN_PAYLOAD] = payload;
     } catch (err) {
       console.error(err);
-      throw new UnauthorizedException('Error while decoding JWT...');
+      throw new UnauthorizedException('Invalid/expired access token');
     }
 
     return true;
