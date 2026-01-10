@@ -50,8 +50,8 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
-    { provide: APP_FILTER, useClass: ExceptionLoggingFilter },
+    // { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
+    // { provide: APP_FILTER, useClass: ExceptionLoggingFilter },
   ],
 })
 export class AppModule implements NestModule {

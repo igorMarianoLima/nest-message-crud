@@ -4,9 +4,11 @@ import { HashingService } from './hashing/hashing.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { PersonModule } from 'src/person/person.module';
 
 @Global()
 @Module({
+  imports: [PersonModule],
   providers: [
     {
       provide: HashingService,
