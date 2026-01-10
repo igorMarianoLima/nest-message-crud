@@ -1,13 +1,13 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from './config.service';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { databaseConfig } from './database.config';
+import { configs } from './configs/index.config';
 
 @Global()
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      load: [databaseConfig],
+      load: configs,
     }),
   ],
   providers: [ConfigService],

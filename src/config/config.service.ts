@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseConfig } from './database.config';
+import { DatabaseConfig } from './configs/database.config';
 import { ConfigService as NestConfigService } from '@nestjs/config';
+import { JwtConfig } from './configs/jwt.config';
 
 @Injectable()
 export class ConfigService {
@@ -15,5 +16,9 @@ export class ConfigService {
 
   getDatabase() {
     return this.configService.get<DatabaseConfig>('database')!;
+  }
+
+  getJwt() {
+    return this.configService.get<JwtConfig>('jwt')!;
   }
 }
