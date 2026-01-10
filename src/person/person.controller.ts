@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { User } from 'src/auth/decorators/user.decorator';
 
+@UseGuards(AuthTokenGuard)
 @Controller('person')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
@@ -30,13 +34,16 @@ export class PersonController {
     return this.personService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.personService.update(id, updatePersonDto);
+  @Patch()
+  update(
+    @User('sub') userId: string,
+    @Body() updatePersonDto: UpdatePersonDto,
+  ) {
+    return this.personService.update(userId, updatePersonDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.personService.remove(id);
+  @Delete()
+  remove(@User('sub') userId: string) {
+    return this.personService.remove(userId);
   }
 }
