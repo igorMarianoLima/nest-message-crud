@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -30,6 +31,7 @@ export class AuthService {
       );
 
       if (!isValidPassword || !user) throw new NotFoundException();
+      if (!user.isActive) throw new ForbiddenException('Deactivated account');
 
       return await this.createTokens(user);
     } catch (err) {
@@ -96,10 +98,15 @@ export class AuthService {
       const user = await this.personService.findOne(sub);
 
       if (!user) throw new Error('User not found');
+      if (!user.isActive) throw new ForbiddenException('Deactivated account');
 
       return this.createTokens(user);
     } catch (err) {
-      throw new UnauthorizedException(err?.message);
+      if (!(err instanceof ForbiddenException)) {
+        throw new UnauthorizedException(err?.message);
+      }
+
+      throw err;
     }
   }
 }

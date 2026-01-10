@@ -89,6 +89,17 @@ export class PersonService {
 
     if (!person) throw new NotFoundException();
 
-    return this.personRepository.remove(person);
+    const isSuccess = !!(
+      await this.personRepository.update(
+        {
+          id,
+        },
+        {
+          isActive: false,
+        },
+      )
+    ).affected;
+
+    return isSuccess;
   }
 }

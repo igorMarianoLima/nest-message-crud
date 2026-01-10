@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,6 +10,8 @@ import { Request } from 'express';
 import { IS_PUBLIC_ENDPOINT, REQUEST_TOKEN_PAYLOAD } from '../auth.constants';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from 'src/config/config.service';
+import { PersonService } from 'src/person/person.service';
+import { TokenPayloadDto } from '../dto/token-payload.dto';
 
 @Injectable()
 export class AuthTokenGuard implements CanActivate {
@@ -16,6 +19,7 @@ export class AuthTokenGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
     private readonly configService: ConfigService,
+    private readonly personService: PersonService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -33,9 +37,12 @@ export class AuthTokenGuard implements CanActivate {
     try {
       const jwtConfig = this.configService.getJwt().secret;
 
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = (await this.jwtService.verifyAsync(token, {
         secret: jwtConfig,
-      });
+      })) as TokenPayloadDto;
+
+      const user = await this.personService.findOne(payload.sub);
+      if (!user?.isActive) throw new ForbiddenException();
 
       request[REQUEST_TOKEN_PAYLOAD] = payload;
     } catch (err) {
