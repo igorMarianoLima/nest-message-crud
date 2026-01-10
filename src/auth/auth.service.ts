@@ -67,18 +67,19 @@ export class AuthService {
   }
 
   private async createTokens(user: Person) {
-    const accessToken = await this.signJwtAsync<Partial<Person>>({
-      sub: user.id,
-      expiresIn: this.configService.getJwt().ttl,
-      payload: {
-        email: user.email,
-      },
-    });
-
-    const refreshToken = await this.signJwtAsync({
-      sub: user.id,
-      expiresIn: this.configService.getJwt().refreshTtl,
-    });
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signJwtAsync<Partial<Person>>({
+        sub: user.id,
+        expiresIn: this.configService.getJwt().ttl,
+        payload: {
+          email: user.email,
+        },
+      }),
+      this.signJwtAsync({
+        sub: user.id,
+        expiresIn: this.configService.getJwt().refreshTtl,
+      }),
+    ]);
 
     return {
       accessToken,
