@@ -1,1 +1,2 @@
 export const REQUEST_TOKEN_PAYLOAD = 'TOKEN';
+export const IS_PUBLIC_ENDPOINT = 'IS_PUBLIC_ENDPOINT';
