@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -7,6 +11,7 @@ import { Repository } from 'typeorm';
 import { PersonService } from 'src/person/person.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { NotificationService } from 'src/notification/adapters/notification-service.service';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class MessageService {
@@ -67,8 +72,14 @@ export class MessageService {
     });
   }
 
-  async create(payload: CreateMessageDto): Promise<Message> {
-    const sender = await this.personService.findOne(payload.from);
+  async create({
+    payload,
+    user,
+  }: {
+    payload: CreateMessageDto;
+    user: TokenPayloadDto;
+  }): Promise<Message> {
+    const sender = await this.personService.findOne(user.sub);
     const receiver = await this.personService.findOne(payload.to);
 
     if (!sender) throw new NotFoundException('Sender not found');
@@ -85,21 +96,31 @@ export class MessageService {
     return this.messageRepository.save(message);
   }
 
-  async update({ id, body }: { id: string; body: UpdateMessageDto }) {
+  async update({
+    id,
+    body,
+    user,
+  }: {
+    id: string;
+    body: UpdateMessageDto;
+    user: TokenPayloadDto;
+  }) {
     const message = await this.messageRepository.preload({
       id,
       ...body,
     });
 
     if (!message) throw new NotFoundException();
+    if (message.from.email !== user.email) throw new ForbiddenException();
 
     return this.messageRepository.save(message);
   }
 
-  async remove(id: string) {
+  async remove({ id, user }: { id: string; user: TokenPayloadDto }) {
     const message = await this.findOne(id);
 
     if (!message) throw new NotFoundException();
+    if (message.from.email !== user.email) throw new ForbiddenException();
 
     return this.messageRepository.remove(message);
   }

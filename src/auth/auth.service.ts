@@ -24,10 +24,10 @@ export class AuthService {
 
       const isValidPassword = await this.hashingService.compare(
         payload.password,
-        user.passwordHash,
+        user?.passwordHash || '',
       );
 
-      if (!isValidPassword) throw new NotFoundException();
+      if (!isValidPassword || !user) throw new NotFoundException();
 
       const jwtConfig = this.configService.getJwt();
 

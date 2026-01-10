@@ -15,6 +15,8 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { User } from 'src/auth/decorators/user.decorator';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @UseGuards(AuthTokenGuard)
 @Controller('message')
@@ -41,8 +43,9 @@ export class MessageController {
   create(
     @Body()
     payload: CreateMessageDto,
+    @User() user: TokenPayloadDto,
   ) {
-    return this.messageService.create(payload);
+    return this.messageService.create({ payload, user });
   }
 
   @Patch(':id')
@@ -63,7 +66,9 @@ export class MessageController {
   remove(
     @Param('id')
     id: string,
+
+    @User() user: TokenPayloadDto,
   ) {
-    return this.messageService.remove(id);
+    return this.messageService.remove({ id, user });
   }
 }

@@ -53,8 +53,6 @@ export class PersonService {
       id,
     });
 
-    if (!person) throw new NotFoundException();
-
     return person;
   }
 
@@ -62,8 +60,6 @@ export class PersonService {
     const person = await this.personRepository.findOneBy({
       email,
     });
-
-    if (!person) throw new NotFoundException();
 
     return person;
   }
