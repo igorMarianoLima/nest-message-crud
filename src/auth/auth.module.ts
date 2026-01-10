@@ -5,10 +5,11 @@ import { BcryptService } from './hashing/bcrypt.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PersonModule } from 'src/person/person.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Global()
 @Module({
-  imports: [PersonModule],
+  imports: [PersonModule, JwtModule],
   providers: [
     {
       provide: HashingService,
